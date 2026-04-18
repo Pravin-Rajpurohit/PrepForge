@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 dotenv.config();
-console.log('MONGO_URI:', process.env.MONGO_URI);
+console.log('ATLAS_URI:', process.env.ATLAS_URI);
 
 import express from 'express';
 import mongoose from 'mongoose';
@@ -34,12 +34,14 @@ app.use((err, req, res, next) => {
 
 const PORT = process.env.PORT || 5000;
 
+const dbUri = process.env.ATLAS_URI || process.env.MONGO_URI;
+
 // Connect to MongoDB
-if (!process.env.MONGO_URI) {
-  throw new Error('MONGO_URI environment variable is not defined');
+if (!dbUri) {
+  throw new Error('ATLAS_URI or MONGO_URI environment variable is not defined');
 }
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose.connect(dbUri)
   .then(() => {
     console.log('Connected to MongoDB');
     app.listen(PORT, () => {
