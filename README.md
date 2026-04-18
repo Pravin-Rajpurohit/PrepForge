@@ -1,5 +1,7 @@
 # PrepForge 🚀
 
+**🌍 Live Demo:** [https://prepforge-mu.vercel.app/](https://prepforge-mu.vercel.app/)
+
 PrepForge is a full-stack, AI-powered mock interview platform designed to help candidates prepare for technical interviews. It leverages the MERN stack and Google's Generative AI (Gemini) to provide dynamic interview questions, speech-to-text transcription for voice answers, and intelligent, strict evaluation of candidate responses.
 
 ## ✨ Features
@@ -10,20 +12,20 @@ PrepForge is a full-stack, AI-powered mock interview platform designed to help c
 - **Dashboard & Analytics:** View your interview history, track your performance trends over time with visual charts, and identify weak areas.
 - **Secure Authentication:** User registration and login using JWT and bcrypt.
 
-## 🛠️ Technology Stack
-- **Frontend:** React, Vite, Tailwind CSS, Zustand (State Management), Recharts (Data Visualization)
-- **Backend:** Node.js, Express.js
-- **Database:** MongoDB, Mongoose
+## 🛠️ Technology Stack & Deployment
+- **Frontend:** React, Vite, Tailwind CSS, Zustand, Recharts — *Deployed on **Vercel***
+- **Backend:** Node.js, Express.js — *Deployed on **Render***
+- **Database:** MongoDB Atlas
 - **AI Integration:** Google Generative AI SDK (`@google/generative-ai`)
 - **Authentication:** JSON Web Tokens (JWT), bcrypt
 
-## ⚙️ Prerequisites
+## ⚙️ Prerequisites (For Local Development)
 Before you begin, ensure you have the following installed:
 - [Node.js](https://nodejs.org/) (v16 or higher recommended)
 - [MongoDB](https://www.mongodb.com/) (Local installation or MongoDB Atlas account)
 - A [Google Gemini API Key](https://aistudio.google.com/)
 
-## 🚀 Getting Started
+## 🚀 Local Development Setup
 
 ### 1. Clone the repository
 ```bash
@@ -40,7 +42,7 @@ npm install
 
 Create a `.env` file in the `server` directory and add the following variables:
 ```env
-# MongoDB Connection String (Local or Atlas)
+# MongoDB Connection String (Atlas or Local)
 ATLAS_URI=your_mongodb_atlas_connection_string
 MONGO_URI=mongodb://127.0.0.1:27017/interviewai
 
