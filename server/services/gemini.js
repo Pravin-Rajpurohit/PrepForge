@@ -1,0 +1,64 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+const model = genAI.getGenerativeModel({ model: 'gemini-flash-latest' }); // Or whatever appropriate model, typically gemini-1.5-flash or gemini-2.0-flash depending on availability
+
+export const generateQuestions = async ({ role, topic, difficulty, count }) => {
+  const prompt = `You are a strict technical interviewer at a top product company. Generate ${count} ${difficulty} interview questions for a ${role} candidate on the topic of ${topic}. Return ONLY a valid JSON array of question strings. No explanation, no markdown, no extra text. Example: ["Question 1?", "Question 2?"]`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+    
+    // Clean up in case there are markdown ticks
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    const questions = JSON.parse(text);
+    if (!Array.isArray(questions)) {
+      throw new Error("Parsed JSON is not an array");
+    }
+    return questions;
+  } catch (error) {
+    console.error("Gemini Question Generation Error:", error);
+    throw new Error("Failed to generate questions: " + error.message);
+  }
+};
+
+export const evaluateAnswer = async ({ questionText, userAnswer }) => {
+  const prompt = `You are a senior technical interviewer at a top product company. Evaluate this interview answer strictly. Question: ${questionText} Candidate Answer: ${userAnswer} Score the answer on: technical accuracy, completeness, and clarity. Return ONLY a valid JSON object with exactly these fields: { "score": number between 0-10, "strength": "string (one sentence about what was good)", "improvement": "string (one sentence about what was missing or wrong)", "feedback": "string (2-3 sentence overall feedback)" }. No markdown, no extra text.`;
+
+  try {
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    let text = response.text();
+    
+    // Clean up in case there are markdown ticks
+    text = text.replace(/```json/g, '').replace(/```/g, '').trim();
+    
+    const evaluation = JSON.parse(text);
+    
+    // Basic validation
+    if (typeof evaluation.score !== 'number') {
+      evaluation.score = parseFloat(evaluation.score) || 0;
+    }
+    
+    return {
+      score: evaluation.score,
+      strength: evaluation.strength || "N/A",
+      improvement: evaluation.improvement || "N/A",
+      feedback: evaluation.feedback || "Evaluation unavailable"
+    };
+  } catch (error) {
+    console.error("Gemini Answer Evaluation Error:", error);
+    // As per requirements: "If Gemini fails for a single answer, set score to 0 and feedback to 'Evaluation unavailable'"
+    return {
+      score: 0,
+      strength: "Failed to evaluate",
+      improvement: "Failed to evaluate",
+      feedback: "Evaluation unavailable"
+    };
+  }
+};
