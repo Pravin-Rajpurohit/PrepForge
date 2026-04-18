@@ -11,7 +11,12 @@ export const startSession = async (req, res) => {
   }
 
   // Generate questions using Gemini
-  const questionsList = await generateQuestions({ role, topic, difficulty, count });
+  let questionsList;
+  try {
+    questionsList = await generateQuestions({ role, topic, difficulty, count });
+  } catch (error) {
+    return res.status(503).json({ message: "AI service is temporarily unavailable. Please try again later." });
+  }
 
   // Format questions for DB
   const questions = questionsList.map(qText => ({

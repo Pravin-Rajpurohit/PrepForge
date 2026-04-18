@@ -47,7 +47,7 @@ const Setup = () => {
         state: { questions: response.data.questions, mode: config.mode.toLowerCase() } 
       });
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to start session. Please try again.');
+      setError("AI service is temporarily unavailable. Please try again later.");
       setLoading(false);
     }
   };
