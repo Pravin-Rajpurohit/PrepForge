@@ -18,17 +18,17 @@ const VoiceInput = ({ onTranscriptChange, disabled }) => {
     recognition.lang = 'en-US';
 
     recognition.onresult = (event) => {
-      let finalTranscript = '';
-      for (let i = 0; i < event.results.length; i++) {
+      let newFinalTranscript = '';
+      // Only iterate through new results to prevent duplication
+      for (let i = event.resultIndex; i < event.results.length; i++) {
         if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript + ' ';
+          newFinalTranscript += event.results[i][0].transcript + ' ';
         }
       }
       
-      // Update parent only with final words, you might also want to append interim results
-      // Here we just dispatch final transcript when available
-      if (finalTranscript) {
-        onTranscriptChange(prev => (prev + ' ' + finalTranscript).trim());
+      // Update parent only with new final words
+      if (newFinalTranscript) {
+        onTranscriptChange(prev => (prev + ' ' + newFinalTranscript).trim());
       }
     };
 
