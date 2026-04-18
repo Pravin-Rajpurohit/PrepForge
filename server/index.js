@@ -1,10 +1,11 @@
+import dotenv from 'dotenv';
+dotenv.config();
+console.log('MONGO_URI:', process.env.MONGO_URI);
+
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import 'express-async-errors';
-
-dotenv.config();
 
 const app = express();
 
@@ -34,6 +35,10 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 5000;
 
 // Connect to MongoDB
+if (!process.env.MONGO_URI) {
+  throw new Error('MONGO_URI environment variable is not defined');
+}
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => {
     console.log('Connected to MongoDB');
